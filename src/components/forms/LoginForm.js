@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
 
-class RegisterForm extends Component {
+class LoginForm extends Component {
   state = {
     email: "",
     password: ""
@@ -13,24 +13,13 @@ class RegisterForm extends Component {
     const { email, password } = this.state;
 
     axios
-      .post("http://localhost:3001/auth/register", { email, password })
+      .post("http://localhost:3001/auth/login", { email, password })
       .then(response => {
-        this.props.onRegisterFormSubmit(response.data.token, () => {
+        this.props.onLoginFormSubmit(response.data.token, () => {
           this.props.history.push("/");
         });
       })
       .catch(err => console.log(err));
-
-    // fetch("http://localhost:3001/auth/register", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify({ email, password })
-    // })
-    //   .then(response => response.json())
-    //   .then(data => console.log(data))
-    //   .catch(error => console.log(error));
   };
 
   onInputChange = (name, event) => {
@@ -59,11 +48,11 @@ class RegisterForm extends Component {
           />
         </p>
         <p>
-          <input type="submit" value="Register New User" />
+          <input type="submit" value="Login New User" />
         </p>
       </form>
     );
   }
 }
 
-export default withRouter(RegisterForm);
+export default withRouter(LoginForm);
