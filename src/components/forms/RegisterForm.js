@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { withRouter } from "react-router-dom";
+import { setAuthToken } from "./../../actions";
+import { connect } from "react-redux";
+import LocalApi from "./../../apis/local";
 
 class RegisterForm extends Component {
   state = {
@@ -12,12 +14,10 @@ class RegisterForm extends Component {
     event.preventDefault();
     const { email, password } = this.state;
 
-    axios
-      .post("http://localhost:3001/auth/register", { email, password })
+    LocalApi.post("/auth/register", { email, password })
       .then(response => {
-        this.props.onRegisterFormSubmit(response.data.token, () => {
-          this.props.history.push("/");
-        });
+        this.props.setAuthToken(response.data.token);
+        this.props.history.push("/bookmarks");
       })
       .catch(err => console.log(err));
 
@@ -39,6 +39,7 @@ class RegisterForm extends Component {
 
   render() {
     const { email, password } = this.state;
+    console.log(this.props);
 
     return (
       <form onSubmit={this.onFormSubmit}>
@@ -66,4 +67,7 @@ class RegisterForm extends Component {
   }
 }
 
-export default withRouter(RegisterForm);
+export default connect(
+  null,
+  { setAuthToken }
+)(withRouter(RegisterForm));

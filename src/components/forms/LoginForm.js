@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { withRouter } from "react-router-dom";
+import { setAuthToken } from "./../../actions";
+import { connect } from "react-redux";
+import LocalApi from "./../../apis/local";
 
 class LoginForm extends Component {
   state = {
@@ -12,14 +15,19 @@ class LoginForm extends Component {
     event.preventDefault();
     const { email, password } = this.state;
 
-    axios
-      .post("http://localhost:3001/auth/login", { email, password })
-      .then(response => {
-        this.props.onLoginFormSubmit(response.data.token, () => {
-          this.props.history.push("/");
-        });
-      })
-      .catch(err => console.log(err));
+    LocalApi.post("/auth/login", { email, password }).then(response => {
+      this.props.setAuthToken(response.data.token);
+      this.props.history.push("/bookmarks");
+    });
+
+    // axios
+    //   .post("http://localhost:3001/auth/login", { email, password })
+    //   .then(response => {
+    //     this.props.onLoginFormSubmit(response.data.token, () => {
+    //       this.props.history.push("/");
+    //     });
+    //   })
+    //   .catch(err => console.log(err));
   };
 
   onInputChange = (name, event) => {
@@ -55,4 +63,7 @@ class LoginForm extends Component {
   }
 }
 
-export default withRouter(LoginForm);
+export default connect(
+  null,
+  { setAuthToken }
+)(withRouter(LoginForm));
